@@ -21,7 +21,7 @@ app.get("/books/book/:id", async (req, res) => {
   }
 });
 
-app.delete("/books/book/:id", async (req, res) => {
+app.delete("/books/delete/:id", async (req, res) => {
   let { id } = req.params;
   let delet = await schema.findByIdAndDelete(id);
   let data = await schema.find();
@@ -39,33 +39,34 @@ app.post("/books/addbooks", check, async (req, res) => {
   res.send(post);
 });
 
-app.patch("books/update/:id", async (req, res) => {
+app.patch("/books/update/:id", async (req, res) => {
   let { id } = req.params;
-  let data = await schema.findByIdAndUpdate(id, req.body);
-  let get = await schema.find();
-  console.log(data);
-  res.send(get);
+  let updatedBook = await schema.findByIdAndUpdate(id, req.body);
+  let books = await schema.find();
+  console.log(updatedBook);
+  res.send(books);
 });
+
 
 app.get(`/books/filter`, async (req, res) => {
   let { author, category, title, sort } = req.query;
   let titleRegex = new RegExp(title, "i");
 
   if (author) {
-    const filter = await schema.find({ author: author });
-    res.send(filter);
+    const filteredBooks = await schema.find({ author: author });
+    res.send(filteredBooks);
   } else if (category) {
-    const filter = await schema.find({ category: category });
-    res.send(filter);
+    const filteredBooks = await schema.find({ category: category });
+    res.send(filteredBooks);
   } else if (title) {
-    const filter = await schema.find({ title: { $regex: titleRegex } });
-    res.send(filter);
-  } else if (sort == "lth") {
-    const ltoh = await schema.find().sort({ price: 1 });
-    res.send(ltoh);
+    const filteredBooks = await schema.find({ title: { $regex: titleRegex } });
+    res.send(filteredBooks);
+  } if (sort == "lth") {
+    const sortedBooks = await schema.find().sort({ price: 1 });
+    res.send(sortedBooks);
   } else if (sort == "htl") {
-    const htoh = await schema.find().sort({ price: -1 });
-    res.send(htoh);
+    const sortedBooks = await schema.find().sort({ price: -1 });
+    res.send(sortedBooks);
   }
 });
 
@@ -73,3 +74,5 @@ app.listen(port, () => {
   console.log(`Server Start :--> loclahosht:${port}`);
   connect();
 });
+
+
